@@ -1,5 +1,11 @@
 # Token system 🔑
-This script is used to add tokens that adds entrance to specific jobs and purchases.
+This script is used to add tokens. These tokens are used in scripts like [cw-raidjob](https://github.com/Coffeelot/cw-raidjob) and [cw-boostjob](https://github.com/Coffeelot/cw-boostjob) (and maybe even more) as an optional way to allow players access to these jobs. 
+
+The script has several pre-made tokens that all use the same item. Has support for any cw script that come with `Config.UseTokens` in it's config. These need to be set to `true` to utalize this script!
+
+❗ We suggest you add some way to get empty tokens to you players, maybe as loot in robberies or other heists for example. This is not supplied ❗
+
+You can spawn empty tokens by doing `/giveitem [playerId] cw_token_empty 1`, or filled tokens with `/createtoken raidmeth` (to get token that gives access to meth job from cw-raidjob for example) if you are admin and want to try it out. 
 
 # Developed by Coffeelot and Wuggie
 [More scripts by us](https://github.com/stars/Coffeelot/lists/cw-scripts)  👈\
