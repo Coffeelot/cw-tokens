@@ -1,6 +1,10 @@
 # Token system 🔑
 This script is used to add tokens that adds entrance to specific jobs and purchases.
 
+# Developed by Coffeelot and Wuggie
+[More scripts by us](https://github.com/stars/Coffeelot/lists/cw-scripts)  👈\
+[Support, updates and script previews](https://discord.gg/FJY4mtjaKr) 👈
+
 # Add to qb-core ❗
 Items to add to qb-core>shared>items.lua 
 ```
@@ -24,4 +28,3 @@ else if (itemData.name == "cw_token") {
 ``` 
 
 Also make sure the images are in qb-inventory>html>images
-## Developed by Coffeelot#1586 and Wuggie#1683
