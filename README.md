@@ -1,5 +1,5 @@
 # Token system 🔑
-This script is used to add tokens. These tokens are used in scripts like [cw-raidjob](https://github.com/Coffeelot/cw-raidjob) and [cw-boostjob](https://github.com/Coffeelot/cw-boostjob) (and maybe even more) as an optional way to allow players access to these jobs. 
+This script is used to add tokens. These tokens are used in scripts like [cw-trading](https://github.com/Coffeelot/cw-trading), [cw-raidjob](https://github.com/Coffeelot/cw-raidjob) and [cw-boostjob](https://github.com/Coffeelot/cw-boostjob) (and maybe even more) as an optional way to allow players access to these jobs. 
 
 The script has several pre-made tokens that all use the same item. Has support for any cw script that come with `Config.UseTokens` in it's config. These need to be set to `true` to utalize this script!
 
@@ -10,6 +10,9 @@ You can spawn empty tokens by doing `/giveitem [playerId] cw_token_empty 1`, or 
 # Developed by Coffeelot and Wuggie
 [More scripts by us](https://github.com/stars/Coffeelot/lists/cw-scripts)  👈\
 [Support, updates and script previews](https://discord.gg/FJY4mtjaKr) 👈
+
+# Preview 📽
+[![YOUTUBE VIDEO](http://img.youtube.com/vi/X8kbM4mPisk/0.jpg)](https://youtu.be/X8kbM4mPisk)
 
 # Add to qb-core ❗
 Items to add to qb-core>shared>items.lua 
