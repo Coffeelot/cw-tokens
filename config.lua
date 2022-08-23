@@ -1,5 +1,7 @@
 Config = {}
 
+Config.Debug = true
+
 Config.Items = {
     empty = 'cw_token_empty',
     filled = 'cw_token'
@@ -49,6 +51,16 @@ Config.Tokens = {
         price = 1000
     },
     -- trade
+    ['tradeUzi'] = {
+        value = 'tradeUzi',
+        label = 'Gets you an uzi',
+        price = 5000
+    },
+    ['tradeMilRifle'] = {
+        value = 'tradeMilRifle',
+        label = 'Gets you a military rifle',
+        price = 30000
+    },
 }
 
 Config.UseTrader = true

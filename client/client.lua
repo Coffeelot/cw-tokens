@@ -17,6 +17,9 @@ end
 --- Create token trader
 CreateThread(function()
     if Config.UseTrader then
+        if Config.Debug then
+           print('Using trader')
+        end
         local trader = Config.Trader
         local animation
         if trader.animation then
@@ -62,7 +65,9 @@ end)
 RegisterNetEvent('cw-tokens:client:attemtTrade', function(data)
     local value = data.value
     local token = Config.Tokens[value]
-
+    if Config.Debug then
+       print('Attemting trade with item '..value)
+    end
     if token then 
         local qbFromItem = QBCore.Shared.Items[Config.Items.empty]
         if qbFromItem then 

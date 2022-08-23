@@ -11,7 +11,7 @@ local function dump(o)
     else
        return tostring(o)
     end
- end
+end
 
 local function createToken(value) 
     local item = Config.Items.filled
@@ -50,30 +50,33 @@ RegisterServerEvent('cw-tokens:server:GiveToken', function(value)
 end)
 
 -- TAKE TOKEN
-RegisterNetEvent('cw-tokens:server:TakeToken', function(value)
-    local src = source
+RegisterNetEvent('cw-tokens:server:TakeToken', function(src, value)
 	local Player = QBCore.Functions.GetPlayer(src)
     local item = Config.Items.filled
-
     local ped = QBCore.Functions.GetPlayer(src)
-    local id = QBCore.Functions.GetPlayer(src).PlayerData.citizenid
+        local id = QBCore.Functions.GetPlayer(src).PlayerData.citizenid
 	local Player = QBCore.Functions.GetPlayer(src)
     local tokens = Player.Functions.GetItemsByName(Config.Items.filled)
-
     local slot = nil
     if tokens then
         for _, item in ipairs(tokens) do
+            if Config.Debug then
+               print(item.info.value)
+            end
             if item.info.value == value then
                 slot = item.slot
             end
         end
     end
-    Player.Functions.RemoveItem(item, 1, slot)
-    TriggerClientEvent('inventory:client:ItemBox', src, getQBItem(item), "remove")
+    if slot then
+        Player.Functions.RemoveItem(item, 1, slot)
+        TriggerClientEvent('inventory:client:ItemBox', src, getQBItem(item), "remove")
+    else
+        TriggerClientEvent('QBCore:Notify', src, "You don't have the relevant token", 'error')
+    end
 end)
 
 -- Fill Token
-
 local function fillToken(source, value, trade)
     local src = source
 	local Player = QBCore.Functions.GetPlayer(src)
@@ -120,6 +123,20 @@ RegisterNetEvent('cw-tokens:server:TradeToken', function(value)
 
 end)
 
+QBCore.Functions.CreateCallback('cw-tokens:server:PlayerHasToken', function(source, cb, value)
+    local src = source
+    local ped = QBCore.Functions.GetPlayer(src)
+    local id = QBCore.Functions.GetPlayer(src).PlayerData.citizenid
+	local Player = QBCore.Functions.GetPlayer(src)
+    local tokens = Player.Functions.GetItemsByName(Config.Items.filled)
+    local result = {}
+    if tokens then
+        for _, item in ipairs(tokens) do
+            result[item.info.value] = item.info.value 
+        end
+    end
+    cb(result)
+end)
 
 -- COMMANDS
 QBCore.Commands.Add('createtoken', 'give token with value. (Admin Only)',{ { name = 'value', help = 'what value should the token contain' }}, true, function(source, args)
