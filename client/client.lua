@@ -70,29 +70,26 @@ RegisterNetEvent('cw-tokens:client:attemtTrade', function(data)
     end
     if token then 
         local qbFromItem = QBCore.Shared.Items[Config.Items.empty]
-        if qbFromItem then 
-            QBCore.Functions.TriggerCallback('QBCore:HasItem', function(result)
-                if result then
-                    TriggerEvent('animations:client:EmoteCommandStart', {"id"})
-                    QBCore.Functions.Progressbar("item_check", 'Discussing trade...', 2000, false, true, {
-                        disableMovement = true,
-                        disableCarMovement = true,
-                        disableMouse = false,
-                        disableCombat = true,
-                    }, {
-                    }, {}, {}, function() -- Done
-                        TriggerEvent('animations:client:EmoteCommandStart', {"c"})
-                        TriggerServerEvent('cw-tokens:server:TradeToken', value)
-                    end, function()
-                        TriggerEvent('animations:client:EmoteCommandStart', {"damn"})
-                        QBCore.Functions.Notify('You do not have a '..qbFromItem.label.. ' on you.' , 'error')
-                    end)
-                else
+        if qbFromItem then
+            if QBCore.Functions.HasItem(qbFromItem.name) then
+                TriggerEvent('animations:client:EmoteCommandStart', {"id"})
+                QBCore.Functions.Progressbar("item_check", 'Discussing trade...', 2000, false, true, {
+                    disableMovement = true,
+                    disableCarMovement = true,
+                    disableMouse = false,
+                    disableCombat = true,
+                }, {
+                }, {}, {}, function() -- Done
+                    TriggerEvent('animations:client:EmoteCommandStart', {"c"})
+                    TriggerServerEvent('cw-tokens:server:TradeToken', value)
+                end, function()
                     TriggerEvent('animations:client:EmoteCommandStart', {"damn"})
-                    QBCore.Functions.Notify('You do not have the items needed', 'error')
-                end
-            end, qbFromItem.name , token.fromAmount)
-
+                    QBCore.Functions.Notify('You do not have a '..qbFromItem.label.. ' on you.' , 'error')
+                end)
+            else
+                TriggerEvent('animations:client:EmoteCommandStart', {"damn"})
+                QBCore.Functions.Notify('You do not have the items needed', 'error')
+            end
         else
             TriggerEvent('animations:client:EmoteCommandStart', {"damn"})
             QBCore.Functions.Notify('Item doesnt exist', 'error')

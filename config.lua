@@ -64,15 +64,6 @@ Config.Tokens = {
 }
 
 Config.UseTrader = true
--- Trade
-local CansToMeth = {
-    tradeName = 'CansToMeth',
-    tradeLabel = 'Trade cans to meth',
-    fromItem = 'plastic', -- change this to "can" when we get the cans into the server
-    fromAmount = 35, -- balance this ocne we get cans in.
-    toItem = 'meth',
-    toAmount = 1
-}
 -- Trader
 Config.Trader = {
     name = 'tokensGuy',
