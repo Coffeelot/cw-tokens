@@ -73,7 +73,7 @@ Oh, and don't for get to enable tokens for both traders and trades! (It's at the
 
 Now you can find a guy who takes tokens and gives you sandwiches!
 
-## Tokens For Tokenens 
+## Tokens For Tokens
 Let's say you don't want people buying access to jobs and guns all willy-nilly. Then this function is for you!
 In the Config.Lua, set Config.UseBuyTokens to `true`. The included token trader will now ONLY accept the trades if you already have a corresponding buy-token (you might want to update the prices if you use this).
 
