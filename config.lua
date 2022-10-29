@@ -1,69 +1,81 @@
 Config = {}
 
-Config.Debug = true
+Config.Debug = false
+Config.UseBuyTokens = false
 
 Config.Items = {
     empty = 'cw_token_empty',
-    filled = 'cw_token'
+    filled = 'cw_token',
+    suffix = '-buy-token'
 }
+
 
 Config.Tokens = {
     -- Raidjobs
     ['raidmeth'] = {
         value = 'raidmeth',
-        label = 'Gives access to meth raid',
+        label = 'Meth raid job',
         price = 12000,
     },
     ['raidcocaine'] = {
         value = 'raidcocaine',
-        label = 'Gives access to cocaine raid',
+        label = 'Cocaine raid job',
         price = 20000,
     },
     ['raidweed'] = {
         value = 'raidweed',
-        label = 'Gives access to weed raid',
+        label = 'Weed raid job',
         price = 1000,
     },
     ['raidart'] = {
         value = 'raidart',
-        label = 'Gives access to art raid',
+        label = 'Art raid job',
         price = 35000,
     },
     -- boost
     ['boostelegyr'] = {
         value = 'boostelegyr',
-        label = 'Gives access to Elegy Retro boost',
+        label = 'Elegy Retro boost job',
         price = 10000,
     },
     ['boostsultanrs'] = {
         value = 'boostsultanrs',
-        label = 'Gives access to Sultan RS boost',
+        label = 'Sultan RS boost job',
         price = 9000,
     },
     ['boostbanshee'] = {
         value = 'boostbanshee',
-        label = 'Gives access to Banshee 900R boost',
+        label = 'Banshee 900R boost job',
         price = 11000,
     },
     ['boostvoodoo'] = {
         value = 'boostvoodoo',
-        label = 'Gives access to voodoo Custom boost',
+        label = 'voodoo Custom boost job',
         price = 1000
     },
     -- trade
     ['tradeUzi'] = {
         value = 'tradeUzi',
-        label = 'Gets you an uzi',
+        label = 'Uzi token',
         price = 5000
     },
     ['tradeMilRifle'] = {
         value = 'tradeMilRifle',
-        label = 'Gets you a military rifle',
+        label = 'Military rifle',
         price = 30000
     },
 }
 
 Config.UseTrader = true
+-- Trade
+local CansToMeth = {
+    tradeName = 'CansToMeth',
+    tradeLabel = 'Trade cans to meth',
+    fromItem = 'plastic', -- change this to "can" when we get the cans into the server
+    fromAmount = 35, -- balance this ocne we get cans in.
+    toItem = 'meth',
+    toAmount = 1
+}
 -- Trader
 Config.Trader = {
     name = 'tokensGuy',

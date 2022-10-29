@@ -37,45 +37,6 @@ local function getQBItem(item)
     end
 end
 
--- ADD TOKEN
-
-RegisterServerEvent('cw-tokens:server:GiveToken', function(value)
-    local src = source
-	local Player = QBCore.Functions.GetPlayer(src)
-
-    local item, info = createToken(value)
-
-    Player.Functions.AddItem(item, 1, nil, info)
-    TriggerClientEvent('inventory:client:ItemBox', source, getQBItem(item), "add")
-end)
-
--- TAKE TOKEN
-RegisterNetEvent('cw-tokens:server:TakeToken', function(src, value)
-	local Player = QBCore.Functions.GetPlayer(src)
-    local item = Config.Items.filled
-    local ped = QBCore.Functions.GetPlayer(src)
-        local id = QBCore.Functions.GetPlayer(src).PlayerData.citizenid
-	local Player = QBCore.Functions.GetPlayer(src)
-    local tokens = Player.Functions.GetItemsByName(Config.Items.filled)
-    local slot = nil
-    if tokens then
-        for _, item in ipairs(tokens) do
-            if Config.Debug then
-               print(item.info.value)
-            end
-            if item.info.value == value then
-                slot = item.slot
-            end
-        end
-    end
-    if slot then
-        Player.Functions.RemoveItem(item, 1, slot)
-        TriggerClientEvent('inventory:client:ItemBox', src, getQBItem(item), "remove")
-    else
-        TriggerClientEvent('QBCore:Notify', src, "You don't have the relevant token", 'error')
-    end
-end)
-
 -- Fill Token
 local function fillToken(source, value, trade)
     local src = source
@@ -104,6 +65,47 @@ local function fillToken(source, value, trade)
     end
 end
 
+-- ADD TOKEN
+RegisterServerEvent('cw-tokens:server:GiveToken', function(value)
+    local src = source
+	local Player = QBCore.Functions.GetPlayer(src)
+
+    local item, info = createToken(value)
+
+    Player.Functions.AddItem(item, 1, nil, info)
+    TriggerClientEvent('inventory:client:ItemBox', source, getQBItem(item), "add")
+end)
+
+-- TAKE TOKEN
+RegisterNetEvent('cw-tokens:server:TakeToken', function(src, value)
+    if Config.Debug then
+       print('in cw tokens')
+    end
+	local Player = QBCore.Functions.GetPlayer(src)
+    local item = Config.Items.filled
+    local ped = QBCore.Functions.GetPlayer(src)
+        local id = QBCore.Functions.GetPlayer(src).PlayerData.citizenid
+	local Player = QBCore.Functions.GetPlayer(src)
+    local tokens = Player.Functions.GetItemsByName(Config.Items.filled)
+    local slot = nil
+    if tokens then
+        for _, item in ipairs(tokens) do
+            if Config.Debug then
+               print(item.info.value)
+            end
+            if item.info.value == value then
+                slot = item.slot
+            end
+        end
+    end
+    if slot then
+        Player.Functions.RemoveItem(item, 1, slot)
+        TriggerClientEvent('inventory:client:ItemBox', src, getQBItem(item), "remove")
+    else
+        TriggerClientEvent('QBCore:Notify', src, "You don't have the relevant token", 'error')
+    end
+end)
+
 RegisterNetEvent('cw-tokens:server:FillToken', function(value)
     local src = source
     fillToken(src, value)
@@ -121,6 +123,24 @@ RegisterNetEvent('cw-tokens:server:TradeToken', function(value)
 		TriggerClientEvent('QBCore:Notify', src, "Not enough money", 'error')
 	end
 
+end)
+
+RegisterNetEvent('cw-tokens:server:SwapToken', function(value)
+    local src = source
+	local Player = QBCore.Functions.GetPlayer(src)
+
+    if Player.PlayerData.money['cash'] >= Config.Tokens[value].price then
+		Player.Functions.RemoveMoney('cash', Config.Tokens[value].price, "Running Costs")
+        local buytoken = value..Config.Items.suffix
+        TriggerEvent('cw-tokens:server:TakeToken', src, buytoken)
+        local item, info = createToken(value)
+
+        Player.Functions.AddItem(item, 1, nil, info)
+        TriggerClientEvent('inventory:client:ItemBox', source, getQBItem(item), "add")
+	else
+        TriggerClientEvent('animations:client:EmoteCommandStart', src, {"damn"})
+		TriggerClientEvent('QBCore:Notify', src, "Not enough money", 'error')
+	end
 end)
 
 QBCore.Functions.CreateCallback('cw-tokens:server:PlayerHasToken', function(source, cb, value)
