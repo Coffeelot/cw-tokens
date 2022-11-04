@@ -9,60 +9,61 @@ Config.Items = {
     suffix = '-buy-token'
 }
 
+Config.PaymentType = 'crypto'
 
 Config.Tokens = {
     -- Raidjobs
     ['raidmeth'] = {
         value = 'raidmeth',
         label = 'Meth raid job',
-        price = 12000,
+        price = 4,
     },
     ['raidcocaine'] = {
         value = 'raidcocaine',
         label = 'Cocaine raid job',
-        price = 20000,
+        price = 6,
     },
     ['raidweed'] = {
         value = 'raidweed',
         label = 'Weed raid job',
-        price = 1000,
+        price = 1,
     },
     ['raidart'] = {
         value = 'raidart',
         label = 'Art raid job',
-        price = 35000,
+        price = 7,
     },
     -- boost
     ['boostelegyr'] = {
         value = 'boostelegyr',
         label = 'Elegy Retro boost job',
-        price = 10000,
+        price = 3,
     },
     ['boostsultanrs'] = {
         value = 'boostsultanrs',
         label = 'Sultan RS boost job',
-        price = 9000,
+        price = 8,
     },
     ['boostbanshee'] = {
         value = 'boostbanshee',
         label = 'Banshee 900R boost job',
-        price = 11000,
+        price = 7,
     },
     ['boostvoodoo'] = {
         value = 'boostvoodoo',
         label = 'voodoo Custom boost job',
-        price = 1000
+        price = 1
     },
     -- trade
     ['tradeUzi'] = {
         value = 'tradeUzi',
         label = 'Uzi token',
-        price = 5000
+        price = 0.2
     },
     ['tradeMilRifle'] = {
         value = 'tradeMilRifle',
         label = 'Military rifle',
-        price = 30000
+        price = 0.9
     },
 }
 

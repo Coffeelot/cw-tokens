@@ -14,6 +14,13 @@ local function canInteract(trader)
     end
 end
 
+function formatTitle (label, price)
+    if Config.PaymentType == 'crypto' then
+        return label..' | '..tostring(price).. ' crypto'
+    else
+        return label..' | $'.. tostring(price)
+    end
+end
 --- Create token trader
 CreateThread(function()
     if Config.UseTrader then
@@ -29,6 +36,8 @@ CreateThread(function()
         end
     
         local options = {}
+
+
         if Config.UseBuyTokens then
             for i,v in pairs(Config.Tokens) do
                 local option = { 
@@ -36,7 +45,7 @@ CreateThread(function()
                     item = Config.Items.filled,
                     event = 'cw-tokens:client:attemtTradeFromToken',
                     icon = 'fas fa-key',
-                    label = v.label..' | $'.. tostring(v.price),
+                    label = formatTitle(v.label, v.price),
                     value = v.value,
                     canInteract = function()
                         return canInteract(trader)
@@ -51,7 +60,7 @@ CreateThread(function()
                     item = Config.Items.empty,
                     event = 'cw-tokens:client:attemtTrade',
                     icon = 'fas fa-key',
-                    label = v.label..' | $'.. tostring(v.price),
+                    label = formatTitle(v.label, v.price),
                     value = v.value,
                     canInteract = function()
                         return canInteract(trader)
@@ -117,6 +126,32 @@ RegisterNetEvent('cw-tokens:client:attemtTrade', function(data)
     end 
 end)
 
+RegisterNetEvent('cw-tokens:client:attemtDigitalTrade', function(value, price)
+    local token = Config.Tokens[value]
+    if Config.Debug then
+       print('Attemting digital trade with item '..value)
+    end
+    if token then 
+        local qbFromItem = QBCore.Shared.Items[Config.Items.empty]
+        if qbFromItem then
+            if QBCore.Functions.HasItem(qbFromItem.name) then
+                QBCore.Functions.Progressbar("item_check", 'Connecting to seller...', 3000, false, true, {}, {
+                }, {}, {}, function() -- Done
+                    TriggerServerEvent('cw-tokens:server:DigitalTradeToken', value, price)
+                end, function()
+                    QBCore.Functions.Notify('You do not have a '..qbFromItem.label.. ' on you.' , 'error')
+                end)
+            else
+                QBCore.Functions.Notify('You do not have the items needed', 'error')
+            end
+        else
+            QBCore.Functions.Notify('Item doesnt exist', 'error')
+        end
+    else
+        QBCore.Functions.Notify('Trade doesnt exist', 'error')
+    end 
+end)
+
 local function checkForBuyTokens(value)
     local tokens = nil
     local buytoken = value..Config.Items.suffix
@@ -167,6 +202,50 @@ RegisterNetEvent('cw-tokens:client:attemtTradeFromToken', function(data)
                     end)
                 else
                     TriggerEvent('animations:client:EmoteCommandStart', {"damn"})
+                    QBCore.Functions.Notify('You do not have the items needed', 'error')
+                end
+            else
+                TriggerEvent('animations:client:EmoteCommandStart', {"damn"})
+                QBCore.Functions.Notify('Item doesnt exist', 'error')
+            end 
+        else
+            if Config.Debug then
+               print('player does NOT have the buy token:', value)
+            end
+            TriggerEvent('animations:client:EmoteCommandStart', {"shrug"})
+            QBCore.Functions.Notify('You do not have the correct token to buy this token', 'error')
+        end
+    else
+        TriggerEvent('animations:client:EmoteCommandStart', {"damn"})
+        QBCore.Functions.Notify('Trade doesnt exist', 'error')
+    end 
+end)
+
+RegisterNetEvent('cw-tokens:client:attemtDigitalTradeFromToken', function(value, price)
+    local token = Config.Tokens[value]
+    if Config.Debug then
+       print('Attemting digital trade from token '..value)
+    end
+    if token then
+        if Config.Debug then
+            print('Token '..token.value..' exists' )
+        end
+        
+        if checkForBuyTokens(value) then
+            if Config.Debug then
+               print('Player has the buy token for', value)
+            end
+            local qbFromItem = QBCore.Shared.Items[Config.Items.filled]
+            if qbFromItem then
+                if QBCore.Functions.HasItem(qbFromItem.name) then
+                    TriggerEvent('animations:client:EmoteCommandStart', {"id"})
+                    QBCore.Functions.Progressbar("item_check", 'Connecting to seller...', 3000, false, true, {}, {
+                    }, {}, {}, function() -- Done
+                        TriggerServerEvent('cw-tokens:server:DigitalSwapToken', value, price)
+                    end, function()
+                        QBCore.Functions.Notify('You do not have a '..qbFromItem.label.. ' on you.' , 'error')
+                    end)
+                else
                     QBCore.Functions.Notify('You do not have the items needed', 'error')
                 end
             else

@@ -51,7 +51,7 @@ local function fillToken(source, value, trade)
     local slot = nil
     if #tokens>0 then
         if trade then
-	        Player.Functions.RemoveMoney("cash", Config.Tokens[value].price)
+	        Player.Functions.RemoveMoney(Config.PaymentType, Config.Tokens[value].price)
         end
 
         Player.Functions.RemoveItem(itemFrom, 1, slot)
@@ -71,6 +71,16 @@ RegisterServerEvent('cw-tokens:server:GiveToken', function(value)
 	local Player = QBCore.Functions.GetPlayer(src)
 
     local item, info = createToken(value)
+
+    Player.Functions.AddItem(item, 1, nil, info)
+    TriggerClientEvent('inventory:client:ItemBox', source, getQBItem(item), "add")
+end)
+
+RegisterServerEvent('cw-tokens:server:GiveBuyToken', function(value)
+    local src = source
+	local Player = QBCore.Functions.GetPlayer(src)
+    local buyToken = value..Config.Items.suffix
+    local item, info = createToken(buyToken)
 
     Player.Functions.AddItem(item, 1, nil, info)
     TriggerClientEvent('inventory:client:ItemBox', source, getQBItem(item), "add")
@@ -115,12 +125,24 @@ RegisterNetEvent('cw-tokens:server:TradeToken', function(value)
     local src = source
 	local Player = QBCore.Functions.GetPlayer(src)
 
-    if Player.PlayerData.money['cash'] >= Config.Tokens[value].price then
-		Player.Functions.RemoveMoney('cash', Config.Tokens[value].price, "Running Costs")
+    if Player.PlayerData.money[Config.PaymentType] >= Config.Tokens[value].price then
+		Player.Functions.RemoveMoney(Config.PaymentType, Config.Tokens[value].price)
         fillToken(src, value, trade)
 	else
         TriggerClientEvent('animations:client:EmoteCommandStart', src, {"damn"})
-		TriggerClientEvent('QBCore:Notify', src, "Not enough money", 'error')
+		TriggerClientEvent('QBCore:Notify', src, "Not enough crypto", 'error')
+	end
+end)
+
+RegisterNetEvent('cw-tokens:server:DigitalTradeToken', function(value, price)
+    local src = source
+	local Player = QBCore.Functions.GetPlayer(src)
+
+    if Player.PlayerData.money['crypto'] >= price then
+		Player.Functions.RemoveMoney('crypto', price)
+        fillToken(src, value, trade)
+	else
+		TriggerClientEvent('QBCore:Notify', src, "Not enough crypto", 'error')
 	end
 
 end)
@@ -129,8 +151,8 @@ RegisterNetEvent('cw-tokens:server:SwapToken', function(value)
     local src = source
 	local Player = QBCore.Functions.GetPlayer(src)
 
-    if Player.PlayerData.money['cash'] >= Config.Tokens[value].price then
-		Player.Functions.RemoveMoney('cash', Config.Tokens[value].price, "Running Costs")
+    if Player.PlayerData.money[Config.PaymentType] >= Config.Tokens[value].price then
+		Player.Functions.RemoveMoney(Config.PaymentType, Config.Tokens[value].price)
         local buytoken = value..Config.Items.suffix
         TriggerEvent('cw-tokens:server:TakeToken', src, buytoken)
         local item, info = createToken(value)
@@ -139,11 +161,52 @@ RegisterNetEvent('cw-tokens:server:SwapToken', function(value)
         TriggerClientEvent('inventory:client:ItemBox', source, getQBItem(item), "add")
 	else
         TriggerClientEvent('animations:client:EmoteCommandStart', src, {"damn"})
-		TriggerClientEvent('QBCore:Notify', src, "Not enough money", 'error')
+		TriggerClientEvent('QBCore:Notify', src, "Not enough crypto", 'error')
 	end
 end)
 
+RegisterNetEvent('cw-tokens:server:DigitalSwapToken', function(value, price)
+    local src = source
+	local Player = QBCore.Functions.GetPlayer(src)
+
+    if Player.PlayerData.money['crypto'] >= price then
+		Player.Functions.RemoveMoney('crypto', price)
+        local buytoken = value..Config.Items.suffix
+        TriggerEvent('cw-tokens:server:TakeToken', src, buytoken)
+        local item, info = createToken(value)
+
+        Player.Functions.AddItem(item, 1, nil, info)
+        TriggerClientEvent('inventory:client:ItemBox', source, getQBItem(item), "add")
+	else
+		TriggerClientEvent('QBCore:Notify', src, "Not enough crypto", 'error')
+	end
+end)
+
+QBCore.Functions.CreateCallback('cw-tokens:server:PlayerHasBuyToken', function(source, cb, value)
+    if Config.Debug then
+        print('checking pockets for', value)
+    end
+    local src = source
+    local ped = QBCore.Functions.GetPlayer(src)
+    local id = QBCore.Functions.GetPlayer(src).PlayerData.citizenid
+	local Player = QBCore.Functions.GetPlayer(src)
+    local tokens = Player.Functions.GetItemsByName(Config.Items.filled)
+    local result = {}
+    local buyTokenValue = value..Config.Items.suffix
+    if tokens then
+        for _, item in ipairs(tokens) do
+            if item.info.value == buyTokenValue then
+                cb(true)
+            end
+        end
+    end
+    cb(false)
+end)
+
 QBCore.Functions.CreateCallback('cw-tokens:server:PlayerHasToken', function(source, cb, value)
+    if Config.Debug then
+        print('getting all tokens')
+    end
     local src = source
     local ped = QBCore.Functions.GetPlayer(src)
     local id = QBCore.Functions.GetPlayer(src).PlayerData.citizenid
@@ -164,6 +227,17 @@ QBCore.Commands.Add('createtoken', 'give token with value. (Admin Only)',{ { nam
 	local Player = QBCore.Functions.GetPlayer(src)
     
     local item, info = createToken(args[1])
+    
+    Player.Functions.AddItem(item, 1, nil, info)
+    TriggerClientEvent('inventory:client:ItemBox', source, getQBItem(item), "add")
+end, 'admin')
+
+QBCore.Commands.Add('createbuytoken', 'give a buy token with value. (Admin Only)',{ { name = 'value', help = 'what value should the token contain' }}, true, function(source, args)
+    local src = source
+	local Player = QBCore.Functions.GetPlayer(src)
+    
+    local buytoken = args[1]..Config.Items.suffix
+    local item, info = createToken(buytoken)
     
     Player.Functions.AddItem(item, 1, nil, info)
     TriggerClientEvent('inventory:client:ItemBox', source, getQBItem(item), "add")
