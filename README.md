@@ -3,9 +3,12 @@ This script is used to add tokens. These tokens are used in scripts like [cw-tra
 
 The script has several pre-made tokens that all use the same item. Has support for any cw script that come with `Config.UseTokens` in it's config. These need to be set to `true` to utalize this script!
 
-❗ We suggest you add some way to get empty tokens to you players, maybe as loot in robberies or other heists for example. This is not supplied ❗
+**❗ We suggest you add some way to get empty tokens to you players, maybe as loot in robberies or other heists for example. This is not supplied, but the following is how you can implement it ❗**
 
-You can spawn empty tokens by doing `/giveitem [playerId] cw_token_empty 1`, or filled tokens with `/createtoken raidmeth` (to get token that gives access to meth job from cw-raidjob for example) if you are admin and want to try it out. 
+You can spawn empty tokens by doing `/giveitem [playerId] cw_token_empty 1`, or filled tokens with `/createtoken raidmeth` (to get token that gives access to meth job from cw-raidjob for example) if you are admin and want to try it out.
+
+**Also suggested:**
+Check out [cw-darkweb](https://github.com/Coffeelot/cw-darkweb). A digital black market to replace the trader. 
 
 # Developed by Coffeelot and Wuggie
 [More scripts by us](https://github.com/stars/Coffeelot/lists/cw-scripts)  👈
