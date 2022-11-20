@@ -65,18 +65,70 @@ Config.Tokens = {
         label = 'Military rifle',
         price = 0.9
     },
+    ['tradePistol'] = {
+        value = 'tradePistol',
+        label = 'Pistol',
+        price = 0.1
+    },
+    ['tradeSawedOff'] = {
+        value = 'tradeSawedOff',
+        label = 'Sawed off',
+        price = 0.3
+    },
+    ['tradeMolotov'] = {
+        value = 'tradeMolotov',
+        label = 'Molotov',
+        price = 0.4
+    },
+    ['tradeDoubleBarrel'] = {
+        value = 'tradeDoubleBarrel',
+        label = 'Double Barrel Sawed off',
+        price = 0.2
+    },
+    ['tradeWeedNutrition'] = {
+        value = 'tradeWeedNutrition',
+        label = 'Weed Nutrition',
+        price = 0.1
+    },
+    ['tradeWeedWhiteWidow'] = {
+        value = 'tradeWeedWhiteWidow',
+        label = 'White Widow Seeds',
+        price = 0.22
+    },
+    ['tradeWeedSkunk'] = {
+        value = 'tradeWeedSkunk',
+        label = 'Skunk Seeds',
+        price = 0.1
+    },
+    ['tradeWeedPurpleHaze'] = {
+        value = 'tradeWeedPurpleHaze',
+        label = 'Purple Haze Seeds',
+        price = 0.4
+    },
+    ['tradeWeedOG'] = {
+        value = 'tradeWeedOG',
+        label = 'OG Kush Seeds',
+        price = 0.31
+    },
+    ['tradeWeedAmnesia'] = {
+        value = 'tradeWeedAmnesia',
+        label = 'Amnesia Seeds',
+        price = 0.31
+    },
+    ['tradeMeth'] = {
+        value = 'tradeMeth',
+        label = 'Meth',
+        price = 0.52
+    },
+    ['tradeCrack'] = {
+        value = 'tradeCrack',
+        label = 'Crack',
+        price = 0.9
+    },
 }
 
 Config.UseTrader = true
--- Trade
-local CansToMeth = {
-    tradeName = 'CansToMeth',
-    tradeLabel = 'Trade cans to meth',
-    fromItem = 'plastic', -- change this to "can" when we get the cans into the server
-    fromAmount = 35, -- balance this ocne we get cans in.
-    toItem = 'meth',
-    toAmount = 1
-}
+
 -- Trader
 Config.Trader = {
     name = 'tokensGuy',
