@@ -264,3 +264,42 @@ RegisterNetEvent('cw-tokens:client:attemtDigitalTradeFromToken', function(value,
         QBCore.Functions.Notify('Trade doesnt exist', 'error')
     end 
 end)
+
+function getAllTokens()
+    local PlayerData = QBCore.Functions.GetPlayerData()
+    local tokenItem = 'cw_token'
+    local tokens = {}
+    for i,item in pairs(PlayerData.items) do
+        if item.name == tokenItem then
+            tokens[item.info.value] = item
+        end
+    end
+    return tokens
+end
+
+RegisterCommand('allTokens', function(_, input)
+    getAllTokens()
+end)
+
+function getToken(input)
+    local tokens = getAllTokens()
+    for i,token in pairs(tokens) do
+        if token.info.value == input then
+            return token
+        end
+    end
+end
+
+function hasToken(input)
+    local tokens = getAllTokens()
+    for i,token in pairs(tokens) do
+        if token.info.value == input then
+            return true
+        end
+    end
+    return false
+end
+
+RegisterCommand('getToken', function(_, input)
+    print(dump(getToken(input[1])))
+end)

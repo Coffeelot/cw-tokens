@@ -27,3 +27,9 @@ files {
 dependency{
     'oxmysql',
 }
+
+exports {
+    'getAllTokens',
+    'getToken',
+    'hasToken'
+}
