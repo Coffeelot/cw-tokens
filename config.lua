@@ -1,7 +1,11 @@
 Config = {}
 
-Config.Debug = false
+Config.Debug = true
 Config.UseBuyTokens = false
+Config.Inventory = 'qb' -- qb or ox
+Config.Phone = 'qb' -- qb for qb, re for renewed phone
+Config.CryptoType = 'moc' -- only relevant for renewed phone!
+
 
 Config.Items = {
     empty = 'cw_token_empty',
