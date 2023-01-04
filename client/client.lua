@@ -273,13 +273,17 @@ RegisterNetEvent('cw-tokens:client:attemtDigitalTradeFromToken', function(value,
 end)
 
 function getAllTokens()
-    local PlayerData = QBCore.Functions.GetPlayerData()
-    local tokenItem = 'cw_token'
     local tokens = {}
-    for i,item in pairs(PlayerData.items) do
-        if item.name == tokenItem then
-            tokens[item.info.value] = item
+    if Config.Inventory == 'qb' then
+        local PlayerData = QBCore.Functions.GetPlayerData()
+        local tokenItem = 'cw_token'
+        for i,item in pairs(PlayerData.items) do
+            if item.name == tokenItem then
+                tokens[item.info.value] = item
+            end
         end
+    elseif Config.Inventory == 'ox' then
+        local tokens = exports.ox_inventory:Search('count', 'cw_token' )
     end
     return tokens
 end
@@ -291,20 +295,31 @@ end)
 function getToken(input)
     local tokens = getAllTokens()
     for i,token in pairs(tokens) do
-        if token.info.value == input then
-            return token
+        if Config.Inventory == 'qb' then
+            if token.info.value == input then
+                return token
+            end
+        elseif Config.Inventory == 'ox' then
+            if token.metadata.value == input then
+                return token
+            end
         end
     end
 end
 
 function hasToken(input)
-    local tokens = getAllTokens()
-    for i,token in pairs(tokens) do
-        if token.info.value == input then
-            return true
+    if Config.Inventory == 'qb' then
+        local tokens = getAllTokens()
+        for i,token in pairs(tokens) do
+            if token.info.value == input then
+                return true
+            end
         end
+        return false
+    elseif Config.Inventory == 'ox' then
+        local items = exports.ox_inventory:Search('count', 'cw_token', { value = input } )
+        return items > 0
     end
-    return false
 end
 
 RegisterCommand('getToken', function(_, input)
