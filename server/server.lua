@@ -28,7 +28,7 @@ local function getItems(src, item)
     if Config.Inventory == 'qb' then
         return Player.Functions.GetItemsByName(item)
     elseif Config.Inventory == 'ox' then
-        return exports.ox_inventory:Search(src, 'count', item) > 0
+        return exports.ox_inventory:GetItem(src, item)
     end
 end
 
@@ -96,8 +96,15 @@ local function getItemSlot(src, value)
             return false
         end
     elseif Config.Inventory == 'ox' then
-        local result = exports.ox_inventory:GetItemSlots(src, Config.Items.filled, { value = value})
-        return result.slot
+        local result = exports.ox_inventory:Search(src, 'slots', Config.Items.filled, { value = value})
+        if useDebug then
+           print('fetched slot:', dump(result[1].slot))
+        end
+        if #result > 0 then
+            return result[1].slot
+        else
+            return false
+        end
     end
 end
 
@@ -169,7 +176,7 @@ end)
 -- TAKE TOKEN
 RegisterNetEvent('cw-tokens:server:TakeToken', function(src, value)
     if useDebug then
-       print('in cw tokens')
+       print('in cw tokens', value, src)
     end
     local item = Config.Items.filled
     local ped = QBCore.Functions.GetPlayer(src)
@@ -262,7 +269,7 @@ QBCore.Functions.CreateCallback('cw-tokens:server:PlayerHasBuyToken', function(s
                     cb(true)
                 end
             elseif Config.Inventory == 'ox' then
-                if item.metaData.value == buyTokenValue then
+                if item.metadata.value == buyTokenValue then
                     cb(true)
                 end
             end 
@@ -270,6 +277,37 @@ QBCore.Functions.CreateCallback('cw-tokens:server:PlayerHasBuyToken', function(s
         end
     end
     cb(false)
+end)
+
+local function hasTokenWithValue(src, item, value)
+    local Player = QBCore.Functions.GetPlayer(src)
+    if Config.Inventory == 'qb' then
+        local items =  Player.Functions.GetItemsByName(item)
+        local result = {}
+        if items then
+            for _, item in ipairs(items) do
+                if item.info.value == value then return true end
+            end
+        end
+        if items ~= nil then return true end
+    elseif Config.Inventory == 'ox' then
+        local items = exports.ox_inventory:Search(src, 'count', item, { value = value } )
+        return items > 0
+    end
+end
+
+
+QBCore.Functions.CreateCallback('cw-tokens:server:PlayerHasTokenWithValue', function(source, cb, value)
+    if useDebug then
+        print('getting tokens with value', value)
+    end
+    local src = source
+    local result = {}
+    local tokens = hasTokenWithValue(src, Config.Items.filled, value)
+    if useDebug then
+       print('found token?', tokens)
+    end
+    cb(tokens)
 end)
 
 QBCore.Functions.CreateCallback('cw-tokens:server:PlayerHasToken', function(source, cb, value)
@@ -293,6 +331,7 @@ QBCore.Functions.CreateCallback('cw-tokens:server:PlayerHasToken', function(sour
     end
     cb(result)
 end)
+
 
 -- COMMANDS
 QBCore.Commands.Add('createtoken', 'give token with value. (Admin Only)',{ { name = 'value', help = 'what value should the token contain' }}, true, function(source, args)
