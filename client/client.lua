@@ -1,14 +1,7 @@
-local QBCore = exports['qb-core']:GetCoreObject() 
+local QBCore = exports['qb-core']:GetCoreObject()
 local useDebug = Config.Debug
 
-AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
-    if Config.Inventory == 'ox' then
-        exports.ox_inventory:displayMetadata('label', 'Key for: ')
-        exports.ox_inventory:displayMetadata('value', 'Value: ')
-    end
-end)
-
-local function canInteract(trader) 
+local function canInteract(trader)
     if trader.available then
         if trader.available.from > trader.available.to then
             if GetClockHours() >= trader.available.from or GetClockHours() < trader.available.to then return true else return false end
@@ -40,13 +33,13 @@ CreateThread(function()
         else
             animation = 'WORLD_HUMAN_STAND_IMPATIENT'
         end
-    
+
         local options = {}
 
 
         if Config.UseBuyTokens then
             for i,v in pairs(Config.Tokens) do
-                local option = { 
+                local option = {
                     type = 'client',
                     item = Config.Items.filled,
                     event = 'cw-tokens:client:attemtTradeFromToken',
@@ -61,7 +54,7 @@ CreateThread(function()
             end
         else
             for i,v in pairs(Config.Tokens) do
-                local option = { 
+                local option = {
                     type = 'client',
                     item = Config.Items.empty,
                     event = 'cw-tokens:client:attemtTrade',
@@ -86,12 +79,12 @@ CreateThread(function()
             scenario = animation,
             target = {
                 options = options,
-                distance = 3.0 
+                distance = 3.0
             },
             spawnNow = true,
             currentpednumber = 0,
         })
-    end   
+    end
 end)
 
 local function hasEmptyToken(item)
@@ -120,7 +113,7 @@ RegisterNetEvent('cw-tokens:client:attemtTrade', function(data)
     if useDebug then
        print('Attemting trade with item '..value)
     end
-    if token then 
+    if token then
         local hasItem = hasEmptyToken()
         if hasItem then
             TriggerEvent('animations:client:EmoteCommandStart', {"id"})
@@ -144,7 +137,7 @@ RegisterNetEvent('cw-tokens:client:attemtTrade', function(data)
     else
         TriggerEvent('animations:client:EmoteCommandStart', {"damn"})
         QBCore.Functions.Notify('Trade doesnt exist', 'error')
-    end 
+    end
 end)
 
 RegisterNetEvent('cw-tokens:client:attemtDigitalTrade', function(value, price)
@@ -166,7 +159,7 @@ RegisterNetEvent('cw-tokens:client:attemtDigitalTrade', function(value, price)
         end
     else
         QBCore.Functions.Notify('Trade doesnt exist', 'error')
-    end 
+    end
 end)
 
 local function checkForBuyTokens(value)
@@ -177,12 +170,11 @@ local function checkForBuyTokens(value)
     end
     QBCore.Functions.TriggerCallback('cw-tokens:server:PlayerHasToken', function(result, buytoken)
         tokens = result
+        if useDebug then
+           print('result: ', tokens[buytoken])
+        end
+        if tokens ~=nil and tokens[buytoken] then return true else return false end
     end)
-    Wait(100)
-    if useDebug then
-       print('result: ', tokens[buytoken])
-    end
-    if tokens ~=nil and tokens[buytoken] then return true else return false end
 end
 
 RegisterNetEvent('cw-tokens:client:attemtTradeFromToken', function(data)
@@ -195,7 +187,7 @@ RegisterNetEvent('cw-tokens:client:attemtTradeFromToken', function(data)
         if useDebug then
             print('Token '..token.value..' exists' )
         end
-        
+
         if checkForBuyTokens(value) then
             if useDebug then
                print('Player has the buy token for', value)
@@ -219,7 +211,7 @@ RegisterNetEvent('cw-tokens:client:attemtTradeFromToken', function(data)
             else
                 TriggerEvent('animations:client:EmoteCommandStart', {"damn"})
                 QBCore.Functions.Notify('You dont have the correct item', 'error')
-            end 
+            end
         else
             if useDebug then
                print('player does NOT have the buy token:', value)
@@ -230,7 +222,7 @@ RegisterNetEvent('cw-tokens:client:attemtTradeFromToken', function(data)
     else
         TriggerEvent('animations:client:EmoteCommandStart', {"damn"})
         QBCore.Functions.Notify('Trade doesnt exist', 'error')
-    end 
+    end
 end)
 
 RegisterNetEvent('cw-tokens:client:attemtDigitalTradeFromToken', function(value, price)
@@ -242,7 +234,7 @@ RegisterNetEvent('cw-tokens:client:attemtDigitalTradeFromToken', function(value,
         if useDebug then
             print('Token '..token.value..' exists' )
         end
-        
+
         if checkForBuyTokens(value) then
             if useDebug then
                print('Player has the buy token for', value)
@@ -258,7 +250,7 @@ RegisterNetEvent('cw-tokens:client:attemtDigitalTradeFromToken', function(value,
                 end)
             else
                 QBCore.Functions.Notify('You do not have the items needed', 'error')
-            end 
+            end
         else
             if useDebug then
                print('player does NOT have the buy token:', value)
@@ -269,21 +261,24 @@ RegisterNetEvent('cw-tokens:client:attemtDigitalTradeFromToken', function(value,
     else
         TriggerEvent('animations:client:EmoteCommandStart', {"damn"})
         QBCore.Functions.Notify('Trade doesnt exist', 'error')
-    end 
+    end
 end)
 
 function getAllTokens()
+    if useDebug then
+       print('Fetching all tokens')
+    end
     local tokens = {}
     if Config.Inventory == 'qb' then
         local PlayerData = QBCore.Functions.GetPlayerData()
-        local tokenItem = 'cw_token'
+        local tokenItem = Config.Items.filled
         for i,item in pairs(PlayerData.items) do
             if item.name == tokenItem then
                 tokens[item.info.value] = item
             end
         end
     elseif Config.Inventory == 'ox' then
-        local tokens = exports.ox_inventory:Search('count', 'cw_token' )
+        local tokens = exports.ox_inventory:Search('count', Config.Items.filled )
     end
     return tokens
 end
@@ -308,6 +303,7 @@ function getToken(input)
 end
 
 function hasToken(input)
+    print(input)
     if Config.Inventory == 'qb' then
         local tokens = getAllTokens()
         for i,token in pairs(tokens) do
@@ -317,7 +313,7 @@ function hasToken(input)
         end
         return false
     elseif Config.Inventory == 'ox' then
-        local items = exports.ox_inventory:Search('count', 'cw_token', { value = input } )
+        local items = exports.ox_inventory:Search('count', Config.Items.filled, { value = input } )
         return items > 0
     end
 end

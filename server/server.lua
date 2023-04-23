@@ -32,7 +32,7 @@ local function getItems(src, item)
     end
 end
 
-local function createToken(value) 
+local function createToken(value)
     local item = Config.Items.filled
     local token = Config.Tokens[value]
     local info = {}
@@ -72,7 +72,7 @@ local function getTokens(value)
 
     if tokens then
         for _, item in ipairs(tokens) do
-            result[item.info.value] = item.info.value 
+            result[item.info.value] = item.info.value
         end
     end
     cb(result)
@@ -143,7 +143,7 @@ local function fillToken(source, value, trade)
     local hasItem = getItems(src, Config.Items.empty)
     if hasItem then
         if trade then
-	        Player.Functions.RemoveMoney(Config.PaymentType, Config.Tokens[value].price)
+	        Player.Functions.RemoveMoney(Config.PaymentType, Config.Tokens[value].price, 'CW-Tokens')
         end
 
         removeItem(itemFrom, nil, source)
@@ -272,7 +272,7 @@ QBCore.Functions.CreateCallback('cw-tokens:server:PlayerHasBuyToken', function(s
                 if item.metadata.value == buyTokenValue then
                     cb(true)
                 end
-            end 
+            end
 
         end
     end
@@ -312,13 +312,10 @@ end)
 
 QBCore.Functions.CreateCallback('cw-tokens:server:PlayerHasToken', function(source, cb, value)
     if useDebug then
-        print('getting all tokens')
+        print('getting all tokens for source', source)
     end
     local src = source
-    local ped = QBCore.Functions.GetPlayer(src)
-    local id = QBCore.Functions.GetPlayer(src).PlayerData.citizenid
-	local Player = QBCore.Functions.GetPlayer(src)
-    local tokens = getItems(Config.Items.filled, Player)
+    local tokens = getItems(src, Config.Items.filled)
     local result = {}
     if tokens then
         for _, item in ipairs(tokens) do
@@ -337,29 +334,29 @@ end)
 QBCore.Commands.Add('createtoken', 'give token with value. (Admin Only)',{ { name = 'value', help = 'what value should the token contain' }}, true, function(source, args)
     local src = source
 	local Player = QBCore.Functions.GetPlayer(src)
-    
+
     local item, info = createToken(args[1])
     print(item, dump(info))
     addItem(item, info, src)
-    end, 'admin')
+    end, 'jadmin')
 
 QBCore.Commands.Add('createbuytoken', 'give a buy token with value. (Admin Only)',{ { name = 'value', help = 'what value should the token contain' }}, true, function(source, args)
     local src = source
 	local Player = QBCore.Functions.GetPlayer(src)
-    
+
     local buytoken = args[1]..Config.Items.suffix
     local item, info = createToken(buytoken)
-    
+
     addItem(item, info, src)
-end, 'admin')
+end, 'dev')
 
 QBCore.Commands.Add('filltoken', 'exchange empty token to filled with value. (Admin Only)',{ { name = 'value', help = 'what value should the token contain' }}, true, function(source, args)
     local src = source
     fillToken(src, args[1])
-end, 'admin')
+end, 'dev')
 
 QBCore.Commands.Add('cwdebugtokens', 'toggle debug for tokens', {}, true, function(source, args)
     useDebug = not useDebug
     print('debug is now:', useDebug)
     TriggerClientEvent('cw-tokens:client:toggleDebug',source, useDebug)
-end, 'admin')
+end, 'dev')
