@@ -1,6 +1,6 @@
 Config = {}
 
-Config.Debug = true
+Config.Debug = false
 Config.UseBuyTokens = false
 Config.Inventory = 'qb' -- qb or ox
 Config.Phone = 'qb' -- qb for qb, re for renewed phone
